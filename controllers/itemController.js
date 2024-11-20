@@ -1,8 +1,23 @@
 const Item = require('../models/item');
+const { Op } = require('sequelize');
 
 exports.getAllItems = async (req, res) => {
   try {
-    const items = await Item.findAll();
+    const { name, quantity, notes, sortBy, order } = req.query; // Added query parameters
+
+    const where = {}; // Initialize where clause for filtering
+
+    // Add filters based on query parameters
+    if (name) where.name = { [Op.like]: `%${name}%` }; // Filter by name
+    if (quantity) where.quantity = quantity; // Filter by quantity
+    if (notes) where.notes = { [Op.like]: `%${notes}%` }; // Filter by notes
+
+    const orderClause = []; // Initialize order clause for sorting
+    if (sortBy) {
+      orderClause.push([sortBy, order === 'desc' ? 'DESC' : 'ASC']); // Set sorting order
+    }
+
+    const items = await Item.findAll({ where, order: orderClause }); // Apply filters and sorting
     res.status(200).json({ data: items });
     // res.json(items);
   } catch (err) {

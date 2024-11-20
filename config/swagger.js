@@ -8,8 +8,27 @@ const swaggerOptions = {
       description: 'API for managing shopping lists',
       version: '1.0.0'
     },
-    host: 'localhost:3000',
-    basePath: '/'
+    servers: [
+      {
+        url: 'http://localhost:4000', // Update with your API base URL
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
+    // host: 'localhost:3000',
+    // basePath: '/'
   },
   apis: ['./routes/*.js']
 };
